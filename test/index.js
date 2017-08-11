@@ -173,13 +173,19 @@ describe("jws", () => {
     describe("sign", () => {
         it("algorithm test: unknown algorithm", () => {
             assert.throws(() => {
-                var sJWS = jws.sign("unknown", '{"cty":"JWT"}', '{"age": 21}');
+                var sJWS = jws.sign({
+                    "cty": "JWT",
+                    "alg": "unknown"
+                }, {
+                    "age": 21
+                });
             });
         });
 
         it("algorithm test: none specifyed in args", function () {
-            var sJWS = jws.sign("none", {
-                "cty": "JWT"
+            var sJWS = jws.sign({
+                "cty": "JWT",
+                "alg": "none"
             }, {
                 "age": 21
             });
@@ -187,7 +193,7 @@ describe("jws", () => {
         });
 
         it("algorithm test: none", function () {
-            var sJWS = jws.sign(null, {
+            var sJWS = jws.sign({
                 "alg": "none",
                 "cty": "JWT"
             }, {
@@ -197,7 +203,7 @@ describe("jws", () => {
         });
 
         it("algorithm test: HS256", function () {
-            var sJWS = jws.sign(null, {
+            var sJWS = jws.sign({
                 "alg": "HS256",
                 "cty": "JWT"
             }, {
@@ -206,8 +212,18 @@ describe("jws", () => {
             assert.equal(sJWS, sJWSHS256);
         });
 
+        it("algorithm test with Buffer key: HS256", function () {
+            var sJWS = jws.sign({
+                "alg": "HS256",
+                "cty": "JWT"
+            }, {
+                "age": 21
+            }, new Buffer(hJWSHSPass, 'hex'));
+            assert.equal(sJWS, sJWSHS256);
+        });
+
         it("algorithm test: HS512", function () {
-            var sJWS = jws.sign(null, {
+            var sJWS = jws.sign({
                 "alg": "HS512",
                 "cty": "JWT"
             }, {
@@ -217,7 +233,7 @@ describe("jws", () => {
         });
 
         it("algorithm test: RS256", function () {
-            var sJWS = jws.sign(null, {
+            var sJWS = jws.sign({
                 "alg": "RS256",
                 "cty": "JWT"
             }, {
@@ -227,7 +243,7 @@ describe("jws", () => {
         });
 
         it("algorithm test: RS384", function () {
-            var sJWS = jws.sign(null, {
+            var sJWS = jws.sign({
                 "alg": "RS384",
                 "cty": "JWT"
             }, {
@@ -237,7 +253,7 @@ describe("jws", () => {
         });
 
         it("algorithm test: RS512", function () {
-            var sJWS = jws.sign(null, {
+            var sJWS = jws.sign({
                 "alg": "RS512",
                 "cty": "JWT"
             }, {
@@ -247,7 +263,7 @@ describe("jws", () => {
         });
 
         it("sign test for algorithm ES256(NIST P-256 k1)", function () {
-            var sJWS = jws.sign(null, {
+            var sJWS = jws.sign({
                 "alg": "ES256",
                 "cty": "JWT"
             }, {
@@ -261,7 +277,7 @@ describe("jws", () => {
         });
 
         it("sign test for algorithm ES384(NIST P-384 k6)", function () {
-            var sJWS = jws.sign(null, {
+            var sJWS = jws.sign({
                 "alg": "ES384",
                 "cty": "JWT"
             }, {
@@ -275,7 +291,7 @@ describe("jws", () => {
         });
 
         xit("algorithm test: PS256", function () {
-            var sJWS = jws.sign(null, {
+            var sJWS = jws.sign({
                 "alg": "PS256",
                 "cty": "JWT"
             }, {
@@ -291,7 +307,7 @@ describe("jws", () => {
         });
 
         xit("algorithm test: PS384", function () {
-            var sJWS = jws.sign(null, {
+            var sJWS = jws.sign({
                 "alg": "PS384",
                 "cty": "JWT"
             }, {
@@ -305,7 +321,7 @@ describe("jws", () => {
         });
 
         xit("algorithm test: PS512", function () {
-            var sJWS = jws.sign(null, {
+            var sJWS = jws.sign({
                 "alg": "PS512",
                 "cty": "JWT"
             }, {
@@ -332,6 +348,11 @@ describe("jws", () => {
 
         it("verify test for algorithm HS256", function () {
             var result = jws.verify(sJWSHS256, hJWSHSPass);
+            assert.equal(result, true, "");
+        });
+
+        it("verify test for algorithm HS256 with Buffer key", function () {
+            var result = jws.verify(sJWSHS256, new Buffer(hJWSHSPass, 'hex'));
             assert.equal(result, true, "");
         });
 
@@ -412,6 +433,18 @@ describe("jws", () => {
                 msg = ex;
             }
             assert.equal(msg, "");
+        });
+    });
+
+    it("decode", function () {
+        assert.deepEqual(jws.decode('eyJjdHkiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhZ2UiOjIxfQ.'), {
+            header: {
+                "cty": "JWT",
+                "alg": "none"
+            },
+            payload: {
+                "age": 21
+            }
         });
     });
 });
