@@ -15,6 +15,17 @@
     "ci": "fibjs test"
   },
   "ci": {
-    "type": "travis"
+    "type": "travis",
+    "version": [
+      "0.22.0",
+      "0.23.0",
+      "0.24.0",
+      "0.25.0",
+      "0.26.0",
+      "0.26.1"
+    ]
+  },
+  "devDependencies": {
+    "@fibjs/ci": "^2.1.0"
   }
 }
