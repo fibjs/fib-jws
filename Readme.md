@@ -1,5 +1,8 @@
 # fib-jws
 
+[![Build Status](https://travis-ci.org/fibjs/fib-jws.svg)](https://travis-ci.org/fibjs/fib-jws)
+[![NPM version](https://img.shields.io/npm/v/fib-jws.svg)](https://www.npmjs.org/package/fib-jws)
+
 An implementation of [JSON Web Signatures](http://self-issued.info/docs/draft-ietf-jose-json-web-signature.html).
 
 # Install
@@ -48,11 +51,14 @@ If `payload` will be coerced into a string using `JSON.stringify`.
 Example
 
 ```js
-const signature = jws.sign({
-  header: { alg: 'HS256' },
-  payload: { id: 12345, name: "Frank" },
-  secret: '98DE76B1',
-});
+const signature = jws.sign(
+  // header
+  { alg: 'HS256' },
+  // payload
+  { id: 12345, name: "Frank" },
+  // secret
+  '98DE76B1',
+);
 ```
 
 ## jws.verify(signature, key, acceptAlgs)
@@ -72,7 +78,8 @@ Returns the decoded header, decoded payload, and signature parts of the JWS Sign
 
 Returns an object with three properties, e.g.
 ```js
-{ header: { alg: 'HS256' },
+{
+  header: { alg: 'HS256' },
   payload: { id: 12345, name: "Frank" }
 }
 ```
