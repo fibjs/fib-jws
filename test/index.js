@@ -154,6 +154,18 @@ IpFRB/BQJQxzDKQLN+HcheCCtLsYG4hHvW0Poni65escBUdMmk4r7sKMlwvknBlJ
 8J6Wl5onelFIMOMqW53h7GirmfSS3TAK
 -----END PUBLIC KEY-----`;
 
+var secp256k1PrvPemP8P = `
+-----BEGIN EC PRIVATE KEY-----
+MHQCAQEEIKiy2VesuKrIF99w6KYA8kV4wZ1ScFXkbQpf8IzfC4hZoAcGBSuBBAAK
+oUQDQgAE2Fqc5YCa++3gap6JkRP2tmEMQyb55sgxZqPAD78XUgu5rW6iVDRxB3Vz
+NgfL27rhLROzfytvEBZ5dV/vq9uHBA==
+-----END EC PRIVATE KEY-----`;
+var secp256k1PubPemP8 = `
+-----BEGIN PUBLIC KEY-----
+MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE2Fqc5YCa++3gap6JkRP2tmEMQyb55sgx
+ZqPAD78XUgu5rW6iVDRxB3VzNgfL27rhLROzfytvEBZ5dV/vq9uHBA==
+-----END PUBLIC KEY-----`;
+
 var sm2PrvPemP8P = `
 -----BEGIN EC PRIVATE KEY-----
 MHcCAQEEILLEx8bur4Goiqx9wjvaqaXMDOG4DFu7dZMOilG20xF9oAoGCCqBHM9V
@@ -179,7 +191,7 @@ describe("jws", () => {
         assert.deepEqual(jws.ALGORITHMS, [
             'HS256', 'HS384', 'HS512', 'HSM3',
             'RS256', 'RS384', 'RS512',
-            'ES256', 'ES384', 'ES512', 'SSM3'
+            'ES256', 'ES256K', 'ES384', 'ES512', 'SSM3'
         ]);
     });
 
@@ -295,6 +307,20 @@ describe("jws", () => {
             var a = sJWS.split(".");
 
             assert.equal(a[0], 'eyJhbGciOiJFUzI1NiIsImN0eSI6IkpXVCJ9');
+            assert.equal(a[1], 'eyJhZ2UiOjIxfQ');
+            assert.equal(a[2] != '', true);
+        });
+
+        it("sign test for algorithm ES256K(secp256k1)", function () {
+            var sJWS = jws.sign({
+                "alg": "ES256K",
+                "cty": "JWT"
+            }, {
+                "age": 21
+            }, secp256k1PrvPemP8P);
+            var a = sJWS.split(".");
+
+            assert.equal(a[0], 'eyJhbGciOiJFUzI1NksiLCJjdHkiOiJKV1QifQ');
             assert.equal(a[1], 'eyJhZ2UiOjIxfQ');
             assert.equal(a[2] != '', true);
         });
@@ -417,6 +443,12 @@ describe("jws", () => {
             assert.equal(jws.verify('eyJhbGciOiJFUzI1NiIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.qVXC_4YMmTvrBDuOYbDzBFnhZynGMKIsMbzUGtCbUcTESk-szN170wRvnI1p2XPfK4Nmr9-Tv_DICzC24MPdrA', k1PubPemP8), true);
             assert.equal(jws.verify('eyJhbGciOiJFUzI1NiIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.llxxbdRworpUTi3WEFjpeagXN7nQNknQXzrdXWbRuFumT7eqWqn05Vux88ubYQ62nLfUOme5Ou0SGxJYd6MwYw', k1PubPemP8), true);
             assert.equal(jws.verify('eyJhbGciOiJFUzI1NiIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.5ChOZc5w9T0SSSQgUK806RA36YCZGvYnUwBlTXsjmzJvv8PJ3FuPvjno0W36q1NJOQe3oGEaRl9o-OGR-0h95A', k1PubPemP8), true);
+        });
+
+        it("verify test for algorithm ES256K(secp256k1)", function () {
+            assert.equal(jws.verify('eyJhbGciOiJFUzI1NksiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.h9IFSFKCz-bHAcY3SdFsrftRuMklKQcAWqhgSh2LYzVjnc0DKPxfAN2AOwJaMglUnRmC7RTyvOMX_dYS0t0AGA', secp256k1PubPemP8), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzI1NksiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.9OEgxU240zu8MzyPTnkEThfVtSHsTZ-VokzRiD29R4QBy6_Kqdv6iLJt1tzdZFmO_5ErW5r7Hor07dTtaFBJ5Q', secp256k1PubPemP8), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzI1NksiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.jF2pBcWAXUUNKFJy4xuSMYhnQJ7f-j1TCUepZV9pBNMxRNN2YNKw_ek2Ef2NJ2-qV-xTQroYOm9I2lLS9iclSQ', secp256k1PubPemP8), true);
         });
 
         it("verify test for algorithm ES384(NIST P-384 k6)", function () {
