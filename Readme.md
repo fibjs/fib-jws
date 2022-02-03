@@ -49,7 +49,7 @@ supported algorithms.
 
 If `payload` will be coerced into a string using `JSON.stringify`.
 
-`key` is a hex encoded string or buffer containing either the secret for HMAC algorithms, or the PEM encoded public key for RSA and ECDSA.
+`key` is a buffer containing either the secret for HMAC algorithms, or the PEM encoded private key for RSA and ECDSA, or the json format private key, or a PKey object.
 
 Example
 
@@ -69,9 +69,7 @@ const signature = jws.sign(
 Returns`true` or `false` for whether a signature matches a secret or key.
 
 `signature` is a JWS Signature. `header.alg` must be a value found in `jws.ALGORITHMS`.
-See above for a table of supported algorithms. `key` is a hex encoded string or
-buffer containing either the secret for HMAC algorithms, or the PEM
-encoded public key for RSA and ECDSA.
+See above for a table of supported algorithms. `key` is a buffer containing either the secret for HMAC algorithms, or the PEM encoded public key for RSA and ECDSA, or the json format public key, or a PKey object.
 
 `acceptAlgs` is a list of what algorithms are accepted.
 
