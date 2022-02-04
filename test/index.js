@@ -154,6 +154,26 @@ IpFRB/BQJQxzDKQLN+HcheCCtLsYG4hHvW0Poni65escBUdMmk4r7sKMlwvknBlJ
 8J6Wl5onelFIMOMqW53h7GirmfSS3TAK
 -----END PUBLIC KEY-----`;
 
+// (ECC NIST P-521)
+var k5PrvPemP8P = `
+-----BEGIN PRIVATE KEY-----
+MIHuAgEAMBAGByqGSM49AgEGBSuBBAAjBIHWMIHTAgEBBEIBRNEQ8Y1gwDMH8pne
+z9uq4ODLE/KTx7eCzMNKlGRIhx/8Mo2+B9ORKPMFk4on0wFW7T+rp7NpXm1wxTOY
+HSTf7mWhgYkDgYYABADSmlI0TDURn/W+oZrgkPgC0F/56jGtzDFSTQEodep5E0Sw
+KvBrWN48PSbxukE9JdXPm2soe1yc9BC/Km6nrQJhnQDeIhUCoVSA8GTZ0EwL1AcT
+5YfKcvwwCdM4lHRU1jYXti4IpC/pggFT3N+IRFmS6M8gTYzvxCZMDUnYHimDB+1p
+jw==
+-----END PRIVATE KEY-----`;
+
+// (ECC NIST P-521)
+var k5PubPemP8 = `
+-----BEGIN PUBLIC KEY-----
+MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQA0ppSNEw1EZ/1vqGa4JD4AtBf+eox
+rcwxUk0BKHXqeRNEsCrwa1jePD0m8bpBPSXVz5trKHtcnPQQvypup60CYZ0A3iIV
+AqFUgPBk2dBMC9QHE+WHynL8MAnTOJR0VNY2F7YuCKQv6YIBU9zfiERZkujPIE2M
+78QmTA1J2B4pgwftaY8=
+-----END PUBLIC KEY-----`;
+
 var secp256k1PrvPemP8P = `
 -----BEGIN EC PRIVATE KEY-----
 MHQCAQEEIKiy2VesuKrIF99w6KYA8kV4wZ1ScFXkbQpf8IzfC4hZoAcGBSuBBAAK
@@ -339,6 +359,20 @@ describe("jws", () => {
             assert.equal(a[2] != '', true);
         });
 
+        it("sign test for algorithm ES512(NIST P-521 k5)", function () {
+            var sJWS = jws.sign({
+                "alg": "ES512",
+                "cty": "JWT"
+            }, {
+                "age": 21
+            }, k5PrvPemP8P);
+            var a = sJWS.split(".");
+
+            assert.equal(a[0], 'eyJhbGciOiJFUzUxMiIsImN0eSI6IkpXVCJ9');
+            assert.equal(a[1], 'eyJhZ2UiOjIxfQ');
+            assert.equal(a[2] != '', true);
+        });
+
         it("sign test for algorithm SM2", function () {
             var sJWS = jws.sign({
                 "alg": "SSM3",
@@ -455,6 +489,12 @@ describe("jws", () => {
             assert.equal(jws.verify('eyJhbGciOiJFUzM4NCIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.ImFmrFvzlyl-BGHz8sdD6we6T1uCL5d6Q-oCWmDSh-q8eSL1bxPix7XZjxZGYJySw1On974Vw2NmzffgXvDPk7Ayvau0_fp0v4KUh4x6RcGKZDQgXVli1mfrGKTFP37C', k6PubPemP8), true);
             assert.equal(jws.verify('eyJhbGciOiJFUzM4NCIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.Ay21GOTDEXWXr2svATEXAmDBVOVX38G4vSf5HJ9Nfqn1IggP1EDQQU6sJYPunNGkW7dQOZ5fOsgU9WibnOCrz73D3NDNDW5lVtFDmSp3dPQz_pddyv_SzOgXh81tlx-o', k6PubPemP8), true);
             assert.equal(jws.verify('eyJhbGciOiJFUzM4NCIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.1z6jcEq6MZxqRSdzGW7scWe-un0IQsB87EsUPY5HipsOrlusPcTAKGkGAodrQEEVxfGca2OCssfKdTH_lTwscmfuUayZDK9XzohB7tf6E92RI4Faox0AcicG-WXAH4fS', k6PubPemP8), true);
+        });
+
+        it("verify test for algorithm ES512(NIST P-521 k5)", function () {
+            assert.equal(jws.verify('eyJhbGciOiJFUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.AKuic_wYsBge_1jHDce_ZlnIi1rMZTjAJn9RJ8zC06_D5GiIYoLeiEjc5RYq0w73ybamKb8ar1WWWhVNZ-peKF8EAbXyt5JhGv-_0xAs17F2cMTudAYzC451Vxh3j-pfh5OI6YDA--qfQvnl-A9ZXUZ0ebijENvhhsYeGcbqmrq8enOY', k5PrvPemP8P), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.AMOaPI3_sbf2kponSVi9cIKHsdR6HY7sz3vQI_Ai5MJQdgRKNCQO3t2KEPEYoFeVRdPz2kQNDRJJyV0PGqNIBdBJAcM-66iYovY7xorJYKNc0J7h5tWiLNglwyCyRYWy5tTwjBcmeyJEC64pmj4aJQIZRafvL-sbSCYgEprGcvZ_9uCh', k5PrvPemP8P), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.ABGEdHY9oLylILuCgVUlc4Ikx-Yrs2ZFd9BZkH105OgR2kUWYwyjpgyskxb5DBQDBiLQGLoTFLoWd6Jp3PoTVEhlAMhgBQygxSb0U2K2hcSQ_ffBtQ42Ao3o8Oe5OVCxh78zB9dXUBN4YhIGxBuln5vZhwyn_2bVIzyEdEae5vfnBHNu', k5PrvPemP8P), true);
         });
 
         it("verify test for algorithm SM2", function () {
