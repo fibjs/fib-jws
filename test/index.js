@@ -211,7 +211,7 @@ describe("jws", () => {
         assert.deepEqual(jws.ALGORITHMS, [
             'HS256', 'HS384', 'HS512', 'HSM3',
             'RS256', 'RS384', 'RS512',
-            'ES256', 'ES256K', 'ES384', 'ES512', 'SSM3'
+            'ES256', 'ES256K', 'ES384', 'ES512', 'SM2SM3'
         ]);
     });
 
@@ -373,16 +373,16 @@ describe("jws", () => {
             assert.equal(a[2] != '', true);
         });
 
-        it("sign test for algorithm SM2", function () {
+        it("sign test for algorithm SM2SM3", function () {
             var sJWS = jws.sign({
-                "alg": "SSM3",
+                "alg": "SM2SM3",
                 "cty": "JWT"
             }, {
                 "age": 21
             }, sm2PrvPemP8P);
             var a = sJWS.split(".");
 
-            assert.equal(a[0], 'eyJhbGciOiJTU00zIiwiY3R5IjoiSldUIn0');
+            assert.equal(a[0], 'eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ');
             assert.equal(a[1], 'eyJhZ2UiOjIxfQ');
             assert.equal(a[2] != '', true);
         });
@@ -497,10 +497,10 @@ describe("jws", () => {
             assert.equal(jws.verify('eyJhbGciOiJFUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.ABGEdHY9oLylILuCgVUlc4Ikx-Yrs2ZFd9BZkH105OgR2kUWYwyjpgyskxb5DBQDBiLQGLoTFLoWd6Jp3PoTVEhlAMhgBQygxSb0U2K2hcSQ_ffBtQ42Ao3o8Oe5OVCxh78zB9dXUBN4YhIGxBuln5vZhwyn_2bVIzyEdEae5vfnBHNu', k5PrvPemP8P), true);
         });
 
-        it("verify test for algorithm SM2", function () {
-            assert.equal(jws.verify('eyJhbGciOiJTU00zIiwiY3R5IjoiSldUIn0.eyJhZ2UiOjIxfQ.en23VGrh2e00MXVwJkZp9126MaWG5VhFnoqqBCHtTYtGPKblD_dE9C8AWbwcqHbhK_1ZKCOUe9Mu_fZASFB7bg', sm2PubPemP8), true);
-            assert.equal(jws.verify('eyJhbGciOiJTU00zIiwiY3R5IjoiSldUIn0.eyJhZ2UiOjIxfQ.1_i35mIBtRRtxOSZCer3DnX2CXylQ_A3oTqZdSxAqke0K3X8iPRvsXfU8fVI6SKYRhh23HcCF7oKsDqVtugnoQ', sm2PubPemP8), true);
-            assert.equal(jws.verify('eyJhbGciOiJTU00zIiwiY3R5IjoiSldUIn0.eyJhZ2UiOjIxfQ.3D712J6TQBId61nNmJv1bE1ZEIABKfskLgXepv4TmDJt9yPy_sc62KKwx9uOE6sm1Sxl2XEVp633tf5LA8eGaw', sm2PubPemP8), true);
+        it("verify test for algorithm SM2SM3", function () {
+            assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.AzJ4KaYFfDnJqmzhdgVomSrP8SKjV2222ARJpSpE2dkHSPD_GcLf3CXjhIfCvwAvgP1Al8z8P6eJ_UkGvlnxLA', sm2PubPemP8), true);
+            assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.5Tvn62blLvNX7yUzCXDJg8gXR4CBLvVNVnG3PfLX4zP0g2YwB-5r6k-lp4Ub4aSFMZm9xDTyIOQCPCiQH99LSg', sm2PubPemP8), true);
+            assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.G1A-6xxdYPTKKk5fcpUGrmnPDqpXuPZ438I8Mx7tafGDXVYsmomd0i9EN-6blH0OpHOmBrch_OnS-uFUlw_OOw', sm2PubPemP8), true);
         });
 
         xit("verify test for algorithm PS256 z3", function () {
@@ -537,7 +537,7 @@ describe("jws", () => {
             } catch (ex) {
                 msg = ex;
             }
-            assert.equal(msg, "algorithm 'HS256' not accepted in the list");
+            assert.notEqual(msg, "");
         });
 
         it("arg acceptAlgs test (HS256 in [HS256])", function () {
