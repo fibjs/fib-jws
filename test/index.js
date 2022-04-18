@@ -199,6 +199,16 @@ MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEwfulw1wMxo7b+3HrGlEvfyaUkjy/
 qHgclV503uiei42yv2o3HcEU+5+rL3os/o5ZiO5/IYdH6aR3AVJTVGSUiA==
 -----END PUBLIC KEY-----`;
 
+var ed25519PrvPemP8P = `
+-----BEGIN PRIVATE KEY-----
+MC4CAQAwBQYDK2VwBCIEIJ1hsZ3v/VpguoRK9JLsLMREScVpezJpGXA7rAMcrn9g
+-----END PRIVATE KEY-----`;
+
+var ed25519PubPemP8 = `
+-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo=
+-----END PUBLIC KEY-----`;
+
 var hJWSHSPass = "616161";
 var sJWSHS256 = 'eyJhbGciOiJIUzI1NiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.pLem30ReEpeXgMt6e3gjZ6QYSpLBbhd_NB-Afud1m4A';
 var sJWSHS512 = 'eyJhbGciOiJIUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.8MblrpemJve17TRLftnvsvDk-Qxz-sWDgVkdURv6Mv9ZSnkKJ5aNfCOkRwD3bCf_nO_LruUlf7olMDKJFd4aCw';
@@ -211,7 +221,8 @@ describe("jws", () => {
         assert.deepEqual(jws.ALGORITHMS, [
             'HS256', 'HS384', 'HS512', 'HSM3',
             'RS256', 'RS384', 'RS512',
-            'ES256', 'ES256K', 'ES384', 'ES512', 'SM2SM3'
+            'ES256', 'ES256K', 'ES384', 'ES512',
+            'EdDSA', 'SM2SM3'
         ]);
     });
 
@@ -387,6 +398,20 @@ describe("jws", () => {
             assert.equal(a[2] != '', true);
         });
 
+        it("sign test for algorithm EdDSA", function () {
+            var sJWS = jws.sign({
+                "alg": "EdDSA",
+                "cty": "JWT"
+            }, {
+                "age": 21
+            }, ed25519PrvPemP8P);
+            var a = sJWS.split(".");
+
+            assert.equal(a[0], 'eyJhbGciOiJFZERTQSIsImN0eSI6IkpXVCJ9');
+            assert.equal(a[1], 'eyJhZ2UiOjIxfQ');
+            assert.equal(a[2], 'FZRETpvInH3tv8gNnTwuPIfguG7ZWxG1ep_q9b3EhA2KxCnLVHC21F0h2MzOsHMq9ynoDF7yfTV34Z2K_-IbBQ');
+        });
+
         xit("algorithm test: PS256", function () {
             var sJWS = jws.sign({
                 "alg": "PS256",
@@ -501,6 +526,10 @@ describe("jws", () => {
             assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.AzJ4KaYFfDnJqmzhdgVomSrP8SKjV2222ARJpSpE2dkHSPD_GcLf3CXjhIfCvwAvgP1Al8z8P6eJ_UkGvlnxLA', sm2PubPemP8), true);
             assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.5Tvn62blLvNX7yUzCXDJg8gXR4CBLvVNVnG3PfLX4zP0g2YwB-5r6k-lp4Ub4aSFMZm9xDTyIOQCPCiQH99LSg', sm2PubPemP8), true);
             assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.G1A-6xxdYPTKKk5fcpUGrmnPDqpXuPZ438I8Mx7tafGDXVYsmomd0i9EN-6blH0OpHOmBrch_OnS-uFUlw_OOw', sm2PubPemP8), true);
+        });
+
+        it("verify test for algorithm EdDSA", function () {
+            assert.equal(jws.verify('eyJhbGciOiJFZERTQSIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.FZRETpvInH3tv8gNnTwuPIfguG7ZWxG1ep_q9b3EhA2KxCnLVHC21F0h2MzOsHMq9ynoDF7yfTV34Z2K_-IbBQ', ed25519PubPemP8), true);
         });
 
         xit("verify test for algorithm PS256 z3", function () {
