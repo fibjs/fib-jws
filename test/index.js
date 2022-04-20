@@ -478,7 +478,6 @@ describe("jws", () => {
             }, sm2PrvPemP8P);
             var a = sJWS.split(".");
 
-            console.log(sJWS);
             assert.equal(a[0], 'eyJhbGciOiJTTTJTTTMtUyIsImN0eSI6IkpXVCJ9');
             assert.equal(a[1], 'eyJhZ2UiOjIxfQ');
             assert.equal(a[2] != '', true);
@@ -492,7 +491,6 @@ describe("jws", () => {
                 "age": 21
             }, z3PrvPemP8P);
 
-            console.log(sJWS);
             var a = sJWS.split(".");
 
             assert.equal(a[0], 'eyJhbGciOiJQUzI1NiIsImN0eSI6IkpXVCJ9');
