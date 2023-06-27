@@ -1,9 +1,9 @@
 # fib-jws
 
-[![Build Status](https://travis-ci.org/fibjs/fib-jws.svg)](https://travis-ci.org/fibjs/fib-jws)
+<!-- [![Build Status](https://travis-ci.org/fibjs/fib-jws.svg)](https://travis-ci.org/fibjs/fib-jws) -->
 [![NPM version](https://img.shields.io/npm/v/fib-jws.svg)](https://www.npmjs.org/package/fib-jws)
 
-An implementation of [JSON Web Signatures](http://self-issued.info/docs/draft-ietf-jose-json-web-signature.html).
+An implementation of [JSON Web Signatures](https://www.rfc-editor.org/rfc/rfc7515.txt).
 
 # Install
 

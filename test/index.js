@@ -210,8 +210,9 @@ MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo=
 -----END PUBLIC KEY-----`;
 
 var hJWSHSPass = "616161";
-var sJWSHS256 = 'eyJhbGciOiJIUzI1NiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.pLem30ReEpeXgMt6e3gjZ6QYSpLBbhd_NB-Afud1m4A';
-var sJWSHS512 = 'eyJhbGciOiJIUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.8MblrpemJve17TRLftnvsvDk-Qxz-sWDgVkdURv6Mv9ZSnkKJ5aNfCOkRwD3bCf_nO_LruUlf7olMDKJFd4aCw';
+var sJWSHS256 = 'eyJhbGciOiJIUzI1NiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.30u5iaBy0IWqpiHcXKZGf7RO-rZgWHDj1bTI3YoFaTk';
+var sJWSHS256BufKey = 'eyJhbGciOiJIUzI1NiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.pLem30ReEpeXgMt6e3gjZ6QYSpLBbhd_NB-Afud1m4A';
+var sJWSHS512 = 'eyJhbGciOiJIUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.9edDUgkCWS2bMzpwQEuEC-CR3Oq4Uh9lAthMggxVXjznd6eg1D2WhjKqwBoJZAapvyKeQDxOxP2xx5x5c7AgoA';
 var sJWSRS256 = 'eyJhbGciOiJSUzI1NiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.OoVNI-3eO1TKSjFBmYkHRx_fnKHwsl9or1396QtfdJM5cFAEP6ZVSzhHab5H6t24vmDzGEOlUj9aQPZFarvKCJfiBe2tLk5iWhkLmY9fmeMgMIgwbYTVkwm5HWDeYntMd8NR8r-nfM2PBYRrtwaNSj3bCqlqLUr7mNGh6t-nw_o';
 var sJWSRS384 = 'eyJhbGciOiJSUzM4NCIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.UMDJVFxQ5KKeyCzp9BcSKav6pWCK8by4mLmwb7yJ2ZpUJyjS4IIwiDKbk_HGKZCB7NYOWCRznKr5Uq_-lxMb6nl25XOEZNz7PJsOhNA_dImPirWGpXUMcyXmPNsR2SmmSNwrFDNd0suOKQ1OqO80zA2m46HrBi2xLQgVB7EL8sU';
 var sJWSRS512 = 'eyJhbGciOiJSUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.WbpWEI34EMx3yJLdCwkaXCBVtIuDZHCg-XkxTcHm_pX93ryJZxofUDpzLALx257DfD-g2KbSpQFxvJDFebgvqanRO3PxQdPgpXVW8MUD-BtFHLyROHOVOczf5OFRqCEKpvNnPMRuC00FT-08jMJZxQJWPd6Xtb1AnpXulM7MTmI';
@@ -276,7 +277,7 @@ describe("jws", () => {
             }, {
                 "age": 21
             }, new Buffer(hJWSHSPass, 'hex'));
-            assert.equal(sJWS, sJWSHS256);
+            assert.equal(sJWS, sJWSHS256BufKey);
         });
 
         it("algorithm test: HS512", function () {
@@ -296,7 +297,7 @@ describe("jws", () => {
             }, {
                 "age": 21
             }, hJWSHSPass);
-            assert.equal(sJWS, 'eyJhbGciOiJIU00zIiwiY3R5IjoiSldUIn0.eyJhZ2UiOjIxfQ.QU2MA3Eo4CT7Oybsj8TQ1NOLwhu7gck792Yr990wRh8');
+            assert.equal(sJWS, 'eyJhbGciOiJIU00zIiwiY3R5IjoiSldUIn0.eyJhZ2UiOjIxfQ.PBcFzxrSZLm2BcF8_4-ZWczfrRQrKP507YvKVF_MjL8');
         });
 
         it("algorithm test: RS256", function () {
@@ -545,7 +546,7 @@ describe("jws", () => {
         });
 
         it("verify test for algorithm HS256 with Buffer key", function () {
-            var result = jws.verify(sJWSHS256, new Buffer(hJWSHSPass, 'hex'));
+            var result = jws.verify(sJWSHS256BufKey, new Buffer(hJWSHSPass, 'hex'));
             assert.equal(result, true, "");
         });
 
