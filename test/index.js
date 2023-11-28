@@ -246,7 +246,25 @@ describe("jws", () => {
             }, {
                 "age": 21
             });
-            assert.equal(sJWS, 'eyJjdHkiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhZ2UiOjIxfQ.');
+            assert.equal(sJWS, 'eyJhbGciOiJub25lIiwiY3R5IjoiSldUIn0.eyJhZ2UiOjIxfQ.');
+        });
+
+        it("algorithm test: order of args", function () {
+            var sJWS = jws.sign({
+                "cty": "JWT",
+                "alg": "none"
+            }, {
+                "object": {
+                    "z": 300,
+                    "a": 100,
+                    "b": 200
+                },
+                "array": [
+                    1, 2, 3, 4, 5
+                ],
+                "age": 21
+            });
+            assert.equal(sJWS, 'eyJhbGciOiJub25lIiwiY3R5IjoiSldUIn0.eyJhZ2UiOjIxLCJhcnJheSI6WzEsMiwzLDQsNV0sIm9iamVjdCI6eyJhIjoxMDAsImIiOjIwMCwieiI6MzAwfX0.');
         });
 
         it("algorithm test: none", function () {
