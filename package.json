@@ -1,6 +1,6 @@
 {
   "name": "fib-jws",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "JSON Web Signatures for fibjs",
   "main": "lib/index.js",
   "repository": "git://github.com/fibjs/fib-jws.git",

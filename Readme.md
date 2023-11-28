@@ -30,11 +30,6 @@ ES384 | ECDSA using P-384 curve and SHA-384 hash algorithm
 ES512 | ECDSA using P-521 curve and SHA-512 hash algorithm
 ES256K | ECDSA using secp256k1 curve and SHA-256 hash algorithm
 SM2SM3 | using SM2 curve and SM3 hash algorithm
-S256 | Schnorr using P-256 curve
-S384 | Schnorr using P-384 curve
-S512 | Schnorr using P-521 curve
-S256K | Schnorr using secp256k1 curve
-SSM2 | Schnorr using SM2 curve
 EdDSA | EdDSA using Ed25519 curve
 none | No digital signature or MAC value included
 
