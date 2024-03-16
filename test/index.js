@@ -3,219 +3,72 @@ var jws = require('..');
 var test = require('test');
 test.setup();
 
-// z1.prv.p5p.pem (RSA)
-var z1PrvPemP5P = `
------BEGIN RSA PRIVATE KEY-----
-MIIBOgIBAAJBAOhmTdK0BSkSFWjzs5vJemLnujwJur3E8NzY35DreQubtkWitw4x
-EnR7TTxBtRQkiVEV/viPedQ+rlsaTjUY/VkCAwEAAQJAeLvFTGRnlemmI8sPkSx/
-n2hhcRVg5Xut4h3tL32Vefhicvq55xqycoLCdgxATa5qyKOrhSz2vNVi+a/4JHom
-TQIhAP6b1FCGazJVYU/el2p2rAsdWDDdpk9TWblG2FErwSOfAiEA6atoD18F27D0
-MRsOb0No9IdKEjiXnYvGAMNcbyBwfAcCIQDVSctpjcF9T+MOWoTzrehgAzwe639n
-0oZGXJ/YF9RbNwIgGEm0u0RJO5idCS2ixnXfRut5C4POXpXUsuebiAF7L6kCIH0m
-GpYlbUmwIMsdWH7N4Sfgk6TSs0zb/xcfNBJbWFep
------END RSA PRIVATE KEY-----`;
-// z1.prv.p5e.pem (RSA)
-var z1PrvPemP5E = `
------BEGIN RSA PRIVATE KEY-----
-Proc-Type: 4,ENCRYPTED
-DEK-Info: DES-EDE3-CBC,4626F2E5853E783F
+const jwk_rsa = {
+    "kty": "RSA",
+    "e": "AQAB",
+    "n": "t0LunXgUABq9Xj48Cvov_eWAQrB0zPMSHeoYkZeYV1PyjtYDhKCoXHRy5kotd__Pb8Up491lIgirsqS77elx551xh0lkkhnCptAH9PEqmNUB7TLbD4bpE54e0YPQ1FV806g2WIGMzJiufE0bascj8GQZn8FBj1PH4asagVCdyS8",
+    "d": "VAdqpeWDNjEMl4PtwBLLop1y3CFQzRC_Q9ws-8UI4zHozDmxT0TjLdFvRczJYHZ5RQSgmozPbHWRVM5YJVSfFw9-OsOZLY3OtknBuvhuurhmfiluoIbfl8xrKDf8bhl-2TH_tE7OpL_Z_BBjVS9hiZVE-YmUDNCfgvyM64Kz3fE",
+    "p": "5uZREKybxtz0nxF5iB83CJB8KxrksM8P6xFWcpFji4oU_CVo0hUlG8oXJxTNkPBlrII__Lkq5Y6ZNhSdeLNZzQ",
+    "q": "yy7lcdB4b8q5QhYMO_a4yVCWQnDWZiAF8sjhFTH2a683XTA3Rp9xQDZvYqc0FFtv8XLR9BcRQtMS42XQoKHC6w",
+    "dp": "l_2b9yHoGOtxixPxsAz8KQMS-TzmtQxYKiBri1bw8_WdAq2NZlzM5JIO04b6GiJkiz3h6PXqqtlHOTYwwjctMQ",
+    "dq": "Sl3QxvaJjklBw0l0kuH7wltHk-ve3SQtaS5TC8Hssn9AIVCLesLS3bDO1eni6uyIrXPcGp3yyGWfDTHvyUtLnw",
+    "qi": "sicXoD3X6VR5lhG_faUMDQjKLvi9IIgeNxLJdQj-WVsIwshJ2dOVKpR8hUnhDPNJFutz5HEtDX92P1ZizuGBXQ"
+};
 
-3vFpkrnbantC8RSzng2+jBw/VX95oi0VGKP0G8whENHUOVQXB/YOUSj+n80Y0Wwc
-GpeQi8U0FQdWyYv8b9aioeFB06r9t9mJsYscJ/wcIvv5tTMkr89cwN3+4GQQuqNg
-TmI9ekeoZ3NP26hTM4XTuFqHx4dzNNwjDLc8txc77WE/o4J4p8k9Py5yPZjs9EKy
-wy/yxtqQYQuFj90OMEG1G89iHTZRcq4YTZYdqg6P/XEUvyjifN+7Nym8f2N9TDDn
-RJtApPQlrgXvUDQKz6Lu1ZYMwe94E9YdutDGQMbxixbiyxlcxrkb/oEHH5WP5qPG
-w/xzh08Ce2Ftba2Q860S8nznjyZFiv+lqSKBahbujgP/63ZL+JbAd4cYBqgm4g1C
-YwMhHJbaVCzwYduxdyK2JBYEosDZiDfnOP4DqPhJYpg=
------END RSA PRIVATE KEY-----`;
-var z1PrvPemP5EPass = "hoge";
-// z1.prv.p8e.pem (RSA)
-var z1PrvPemP8E = `
------BEGIN ENCRYPTED PRIVATE KEY-----
-MIIBpjBABgkqhkiG9w0BBQ0wMzAbBgkqhkiG9w0BBQwwDgQIyScsGkpMl3kCAggA
-MBQGCCqGSIb3DQMHBAiObBK7oyBAzwSCAWCkStExnU3pYBQAxRqDctg5QEO3Ic1d
-GsRW+JW0kNonUydoOSD/7DBglnSDowiQ69HCW4OmumSJIU0hewX0yburFuy6Zs/q
-DkWox7oxBCsgFmfmkKGcK0USeJ+LX+YZVbvCCvHZkd99pEqQSfkRu4DgXbWmo6Zv
-2A6VFyBhE9MFmYex8mHTZ5cchBzAiFWRzjpRX94F4vbUFoXPGrEbOLovM2VpZ8Df
-1nLuXhWYVHsXHWn+fm7TH4Xzh1mFYYkTiXL9ABwKKohEL2SQJzKpa9FZvOZAmlSe
-UgQxVQLM/ZC+o4Vs4JHqIu4Ek2bgjEqDzo2EPznpcCsQTcwOqhPwNjP4Y3ovn1Nm
-8i0Hx51OA0vjRZBvvduKM9d5kRAOg8jqLjeWU3KraWLuSJ96RTzlWFgw6PsML+RE
-LHfdKDjRT0NMEMRh892oBi828asvvSWO6HYcM0xclt0uakxJhVP/mtzA
------END ENCRYPTED PRIVATE KEY-----`;
-var z1PrvPemP8EPass = "passwd";
-var z1PubPemP8 = `
------BEGIN PUBLIC KEY-----
-MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAOhmTdK0BSkSFWjzs5vJemLnujwJur3E
-8NzY35DreQubtkWitw4xEnR7TTxBtRQkiVEV/viPedQ+rlsaTjUY/VkCAwEAAQ==
------END PUBLIC KEY-----`;
-var z1CertPEM = `
------BEGIN CERTIFICATE-----
-MIIBdTCCAR+gAwIBAgIBBTANBgkqhkiG9w0BAQUFADAaMQswCQYDVQQGEwJVUzEL
-MAkGA1UECgwCYTEwHhcNMTMwNTA0MDM0MTQxWhcNMjMwNTA0MDM0MTQxWjAaMQsw
-CQYDVQQGEwJVUzELMAkGA1UECgwCYTEwXDANBgkqhkiG9w0BAQEFAANLADBIAkEA
-6GZN0rQFKRIVaPOzm8l6Yue6PAm6vcTw3NjfkOt5C5u2RaK3DjESdHtNPEG1FCSJ
-URX++I951D6uWxpONRj9WQIDAQABo1AwTjAdBgNVHQ4EFgQUxUc+4gDI561wA9/1
-QguM3fTCDhUwHwYDVR0jBBgwFoAUxUc+4gDI561wA9/1QguM3fTCDhUwDAYDVR0T
-BAUwAwEB/zANBgkqhkiG9w0BAQUFAANBALL2k69LjwOYfDXv3TXJUAFGUqto+Noj
-CJLP08fOfNBZy+KAIy0GsrNU/3uRViqbuGqAnH9kFFwHQjOAFrAe8XQ=
------END CERTIFICATE-----`;
-// z3.prv.p8p.pem (RSA)
-var z3PrvPemP8P = `
------BEGIN PRIVATE KEY-----
-MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBALDikFExZMEW5bws
-j9DckEA+Ai7jYe7+In5UHpsqCaqXlPlJQFpziDWDHp1IlWI6r+nZ/7AJhS3y6wbV
-rF8IN4ohKaga1LIL3RDfnGbm4QcF06rrE0vHkMALUu0o/7zmR0qUgeNnRhd21J/+
-5vt9nzbaigklghW3DKYCaZN/n3CbAgMBAAECgYEAq1zjGXWzuYi4SkQVk++KZGJu
-dQRehU15F0/hUss4ECfH8HXxvW893zHG//MoncBjWjeTCPVAK9KxtK5ezrZELpXb
-Q82HCR2yhf0Wjt4dMVPwyXs6AFfjv5fPYrwODQIOAccXuf8CirfHQlJu9WZCJH6X
-mbOgYSxgzlWUn00vlTkCQQDeStbmlwK4SeSA6yKhCk2Oab3qojtP/FPPiNrMqVnH
-IDDH9A0LAfUUvTsZL6PvLCsmkr2ubBn4EZUYX5qaIJkdAkEAy7UO9s4UJC3s4vVL
-wOzqSkxq287x1wfRkLJbYCkkouV93MoGDoq2dJ1jLD99Ts0QB8zkcu/Bk4whAS/u
-PIg7FwJBALDvtxCCINsZjfWDs+OlNMhnqJCLo1RuTzPBBg+juN9D4zA1NPCPFUn1
-uYW5ou4sJQimAq9EQoNvU1K8Pm3yBo0CQQCaQfWe99dQvmZQR6ih48ZXlR6mbUO9
-rfIIPMftPbq8kESLWYDUqj4YeMaMz1c4wRiOj52/W8eez9J+b6lctVzpAkAUWYjg
-GoRPQcbtp1pc2qb4wIMG9+D/VevHkHH7x/RAIgNkK3+Y0XiAa2hAZvveUYua05Yy
-akHe+tn1GooNC2SE
------END PRIVATE KEY-----`;
-var z3PubPemP8 = `
------BEGIN PUBLIC KEY-----
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCw4pBRMWTBFuW8LI/Q3JBAPgIu
-42Hu/iJ+VB6bKgmql5T5SUBac4g1gx6dSJViOq/p2f+wCYUt8usG1axfCDeKISmo
-GtSyC90Q35xm5uEHBdOq6xNLx5DAC1LtKP+85kdKlIHjZ0YXdtSf/ub7fZ822ooJ
-JYIVtwymAmmTf59wmwIDAQAB
------END PUBLIC KEY-----`;
-// z4.prv.p8p.pem (RSA 2048bit)
-var z4PrvPemP8P = `
------BEGIN PRIVATE KEY-----
-MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDfdOqotHd55SYO
-0dLz2oXengw/tZ+q3ZmOPeVmMuOMIYO/Cv1wk2U0OK4pug4OBSJPhl09Zs6IwB8N
-wPOU7EDTgMOcQUYB/6QNCI1J7Zm2oLtuchzz4pIb+o4ZAhVprLhRyvqi8OTKQ7kf
-Gfs5Tuwmn1M/0fQkfzMxADpjOKNgf0uy6lN6utjdTrPKKFUQNdc6/Ty8EeTnQEwU
-lsT2LAXCfEKxTn5RlRljDztS7Sfgs8VL0FPy1Qi8B+dFcgRYKFrcpsVaZ1lBmXKs
-XDRu5QR/Rg3f9DRq4GR1sNH8RLY9uApMl2SNz+sR4zRPG85R/se5Q06Gu0BUQ3UP
-m67ETVZLAgMBAAECggEADjU54mYvHpICXHjc5+JiFqiH8NkUgOG8LL4kwt3DeBp9
-bP0+5hSJH8vmzwJkeGG9L79EWG4b/bfxgYdeNX7cFFagmWPRFrlxbd64VRYFawZH
-RJt+2cbzMVI6DL8EK4bu5Ux5qTiV44Jw19hoD9nDzCTfPzSTSGrKD3iLPdnREYaI
-GDVxcjBv3Tx6rrv3Z2lhHHKhEHb0RRjATcjAVKV9NZhMajJ4l9pqJ3A4IQrCBl95
-ux6Xm1oXP0i6aR78cjchsCpcMXdP3WMsvHgTlsZT0RZLFHrvkiNHlPiil4G2/eHk
-wvT//CrcbO6SmI/zCtMmypuHJqcr+Xb7GPJoa64WoQKBgQDwrfelf3Rdfo9kaK/b
-rBmbu1++qWpYVPTedQy84DK2p3GE7YfKyI+fhbnw5ol3W1jjfvZCmK/p6eZR4jgy
-J0KJ76z53T8HoDTF+FTkR55oM3TEM46XzI36RppWP1vgcNHdz3U4DAqkMlAh4lVm
-3GiKPGX5JHHe7tWz/uZ55Kk58QKBgQDtrkqdSzWlOjvYD4mq4m8jPgS7v3hiHd+1
-OT8S37zdoT8VVzo2T4SF+fBhI2lWYzpQp2sCjLmCwK9k/Gur55H2kTBTwzlQ6WSL
-Te9Zj+eoMGklIirA+8YdQHXrO+CCw9BTJAF+c3c3xeUOLXafzyW29bASGfUtA7Ax
-QAsR+Rr3+wKBgAwfZxrh6ZWP+17+WuVArOWIMZFj7SRX2yGdWa/lxwgmNPSSFkXj
-hkBttujoY8IsSrTivzqpgCrTCjPTpir4iURzWw4W08bpjd7u3C/HX7Y16Uq8ohEJ
-T5lslveDJ3iNljSK74eMK7kLg7fBM7YDogxccHJ1IHsvInp3e1pmZxOxAoGAO+bS
-TUQ4N/UuQezgkF3TDrnBraO67leDGwRbfiE/U0ghQvqh5DA0QSPVzlWDZc9KUitv
-j8vxsR9o1PW9GS0an17GJEYuetLnkShKK3NWOhBBX6d1yP9rVdH6JhgIJEy/g0Su
-z7TAFiFc8i7JF8u4QJ05C8bZAMhOLotqftQeVOMCgYAid8aaRvaM2Q8a42Jn6ZTT
-5ms6AvNr98sv0StnfmNQ+EYXN0bEk2huSW+w2hN34TYYBTjViQmHbhudwwu8lVjE
-ccDmIXsUFbHVK+kTIpWGGchy5cYPs3k9s1nMR2av0Lojtw9WRY76xRXvN8W6R7Eh
-wA2ax3+gEEYpGhjM/lO2Lg==
------END PRIVATE KEY-----`;
-// z4.pub.p8.pem (RSA 2048bit)
-var z4PubPemP8 = `
------BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA33TqqLR3eeUmDtHS89qF
-3p4MP7Wfqt2Zjj3lZjLjjCGDvwr9cJNlNDiuKboODgUiT4ZdPWbOiMAfDcDzlOxA
-04DDnEFGAf+kDQiNSe2ZtqC7bnIc8+KSG/qOGQIVaay4Ucr6ovDkykO5Hxn7OU7s
-Jp9TP9H0JH8zMQA6YzijYH9LsupTerrY3U6zyihVEDXXOv08vBHk50BMFJbE9iwF
-wnxCsU5+UZUZYw87Uu0n4LPFS9BT8tUIvAfnRXIEWCha3KbFWmdZQZlyrFw0buUE
-f0YN3/Q0auBkdbDR/ES2PbgKTJdkjc/rEeM0TxvOUf7HuUNOhrtAVEN1D5uuxE1W
-SwIDAQAB
------END PUBLIC KEY-----`;
-// _gitpg/jsrsasign/test/eckey/k1.prv.p8p.pem (ECC NIST P-256)
-var k1PrvPemP8P = `
------BEGIN PRIVATE KEY-----
-MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgEbVzfPnZPxfAyxqE
-ZV05laAoJAl+/6Xt2O4mOB611sOhRANCAASgFTKjwJAAU95g++/vzKWHkzAVmNMI
-tB5vTjZOOIwnEb70MsWZFIyUFD1P9Gwstz4+akHX7vI8BH6hHmBmfeQl
------END PRIVATE KEY-----`;
-// _gitpg/jsrsasign/test/eckey/k1.pub.pem (ECC NIST P-256)
-var k1PubPemP8 = `
------BEGIN PUBLIC KEY-----
-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEoBUyo8CQAFPeYPvv78ylh5MwFZjT
-CLQeb042TjiMJxG+9DLFmRSMlBQ9T/RsLLc+PmpB1+7yPAR+oR5gZn3kJQ==
------END PUBLIC KEY-----`;
-// _gitpg/jsrsasign/test/eckey/k6.prv.p8p.pem (ECC NIST P-384)
-var k6PrvPemP8P = `
------BEGIN PRIVATE KEY-----
-MIG2AgEAMBAGByqGSM49AgEGBSuBBAAiBIGeMIGbAgEBBDAamStb0Xep3y3sWw2u
-SSAdUPkgQ9Rvhlnx8XEVOYy2teh69T0on77ja02m03n8t8WhZANiAARUNSar38Rz
-lKPyZFsNSGUanzpNRth0C+MikVEH8FAlDHMMpAs34dyF4IK0uxgbiEe9bQ+ieLrl
-6xwFR0yaTivuwoyXC+ScGUnwnpaXmid6UUgw4ypbneHsaKuZ9JLdMAo=
------END PRIVATE KEY-----`;
-// _gitpg/jsrsasign/test/eckey/k6.pub.p8.pem (ECC NIST P-384)
-var k6PubPemP8 = `
------BEGIN PUBLIC KEY-----
-MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEVDUmq9/Ec5Sj8mRbDUhlGp86TUbYdAvj
-IpFRB/BQJQxzDKQLN+HcheCCtLsYG4hHvW0Poni65escBUdMmk4r7sKMlwvknBlJ
-8J6Wl5onelFIMOMqW53h7GirmfSS3TAK
------END PUBLIC KEY-----`;
+const jwk_p256 = {
+    "kty": "EC",
+    "crv": "P-256",
+    "x": "QSsDKjaLTNb3CBZIIqlqwMC-tcQgHGuHdatw6xx0QuA",
+    "y": "VAgVNr07Ck6OuQQiWMGq4s8YZGKRT87qRk4r4nAalVg",
+    "d": "KZgvxxGq-xztOtnQ9XJHKtFwb6Qj8-3wEQFV7kW6BkE"
+};
 
-// (ECC NIST P-521)
-var k5PrvPemP8P = `
------BEGIN PRIVATE KEY-----
-MIHuAgEAMBAGByqGSM49AgEGBSuBBAAjBIHWMIHTAgEBBEIBRNEQ8Y1gwDMH8pne
-z9uq4ODLE/KTx7eCzMNKlGRIhx/8Mo2+B9ORKPMFk4on0wFW7T+rp7NpXm1wxTOY
-HSTf7mWhgYkDgYYABADSmlI0TDURn/W+oZrgkPgC0F/56jGtzDFSTQEodep5E0Sw
-KvBrWN48PSbxukE9JdXPm2soe1yc9BC/Km6nrQJhnQDeIhUCoVSA8GTZ0EwL1AcT
-5YfKcvwwCdM4lHRU1jYXti4IpC/pggFT3N+IRFmS6M8gTYzvxCZMDUnYHimDB+1p
-jw==
------END PRIVATE KEY-----`;
+const jwk_p256k = {
+    "kty": "EC",
+    "crv": "secp256k1",
+    "x": "7E2eEBAdhCFYOTlCT3o3B-aFiYxxG6yMA4yCUJWS95I",
+    "y": "95WgicRnizqQwlYcHsyZR4mswaUETsc_KuWxyw6_uO0",
+    "d": "FbEkNqkmYfaf50DPKP4Oion-BsZFQx7g1A3pM5s5X5U"
+};
 
-// (ECC NIST P-521)
-var k5PubPemP8 = `
------BEGIN PUBLIC KEY-----
-MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQA0ppSNEw1EZ/1vqGa4JD4AtBf+eox
-rcwxUk0BKHXqeRNEsCrwa1jePD0m8bpBPSXVz5trKHtcnPQQvypup60CYZ0A3iIV
-AqFUgPBk2dBMC9QHE+WHynL8MAnTOJR0VNY2F7YuCKQv6YIBU9zfiERZkujPIE2M
-78QmTA1J2B4pgwftaY8=
------END PUBLIC KEY-----`;
+const jwk_p384 = {
+    "kty": "EC",
+    "crv": "P-384",
+    "x": "b0IQZ3q4kjIndXrr3pPLMLzdbr74j4KN7f2v3tWjFP9B6P5lp9eTp4He3OQSmLcF",
+    "y": "0sZ10AUJ26UlV0PHXIoParNSFPuBkrcGA5XPsZjHR5ifoMdvLRaeFl4Y6uugos4Q",
+    "d": "XakINEHwR0V0kQ7XyitbM3I98dypz2lUXWd46MJ8DzKjM8OO_sxFIaZ4P7bKR0qj"
+};
 
-var secp256k1PrvPemP8P = `
------BEGIN EC PRIVATE KEY-----
-MHQCAQEEIKiy2VesuKrIF99w6KYA8kV4wZ1ScFXkbQpf8IzfC4hZoAcGBSuBBAAK
-oUQDQgAE2Fqc5YCa++3gap6JkRP2tmEMQyb55sgxZqPAD78XUgu5rW6iVDRxB3Vz
-NgfL27rhLROzfytvEBZ5dV/vq9uHBA==
------END EC PRIVATE KEY-----`;
-var secp256k1PubPemP8 = `
------BEGIN PUBLIC KEY-----
-MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE2Fqc5YCa++3gap6JkRP2tmEMQyb55sgx
-ZqPAD78XUgu5rW6iVDRxB3VzNgfL27rhLROzfytvEBZ5dV/vq9uHBA==
------END PUBLIC KEY-----`;
+const jwk_p521 = {
+    "kty": "EC",
+    "crv": "P-521",
+    "x": "AevYZBcVpweNUIPTxRa1PGCHpNiiVJcNu4gSVvxIkXSENkFNr36P1lSeEuqPo2tqtaBBd_O3E91R3JjcbG4h0nG9",
+    "y": "AZWbIcFfv5GFWIdXqauxAWyweN04NriqgqwyXG4F3hoG66JxjIe9j1_7ZuOCWjMSCeWxTjtkc3bzM3YZh3qxExCq",
+    "d": "ADyFyNJCqtc5f1YGu330J_qFLVvapnDRydPsrFwIxxPVtnbGUdUsD3-nQfgnhTV2H49Bku2n7k9mmF6638oXBw1s"
+};
 
-var sm2PrvPemP8P = `
------BEGIN EC PRIVATE KEY-----
-MHcCAQEEILLEx8bur4Goiqx9wjvaqaXMDOG4DFu7dZMOilG20xF9oAoGCCqBHM9V
-AYItoUQDQgAEwfulw1wMxo7b+3HrGlEvfyaUkjy/qHgclV503uiei42yv2o3HcEU
-+5+rL3os/o5ZiO5/IYdH6aR3AVJTVGSUiA==
------END EC PRIVATE KEY-----`;
+const jwk_ed25519 = {
+    "kty": "OKP",
+    "crv": "Ed25519",
+    "x": "xaJMTnO3oEipwJmmN68usxFKyWuImM2FP8jYvA3Z46o",
+    "d": "dBiAYmRBdLn_80Xiy8F6jVPJ9s-jap-f3Anbk0suRhg"
+}
 
-var sm2PubPemP8 = `
------BEGIN PUBLIC KEY-----
-MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEwfulw1wMxo7b+3HrGlEvfyaUkjy/
-qHgclV503uiei42yv2o3HcEU+5+rL3os/o5ZiO5/IYdH6aR3AVJTVGSUiA==
------END PUBLIC KEY-----`;
-
-var ed25519PrvPemP8P = `
------BEGIN PRIVATE KEY-----
-MC4CAQAwBQYDK2VwBCIEIJ1hsZ3v/VpguoRK9JLsLMREScVpezJpGXA7rAMcrn9g
------END PRIVATE KEY-----`;
-
-var ed25519PubPemP8 = `
------BEGIN PUBLIC KEY-----
-MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo=
------END PUBLIC KEY-----`;
+const jwk_sm2 = {
+    "kty": "EC",
+    "crv": "SM2",
+    "x": "Na1B7soopNRgyrVnvCxwi-7Ru0nq5HORSLM2tquM7qQ",
+    "y": "zmOTuaAha3Kuoo2UE0_edqQsvMe7jVJvA0cCjaTl7Tc",
+    "d": "SdOvpH5DJ97dnA3UInQfwe6MK9nnaIQUb35cOFCNNRY"
+};
 
 var hJWSHSPass = "616161";
 var sJWSHS256 = 'eyJhbGciOiJIUzI1NiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.30u5iaBy0IWqpiHcXKZGf7RO-rZgWHDj1bTI3YoFaTk';
 var sJWSHS256BufKey = 'eyJhbGciOiJIUzI1NiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.pLem30ReEpeXgMt6e3gjZ6QYSpLBbhd_NB-Afud1m4A';
 var sJWSHS512 = 'eyJhbGciOiJIUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.9edDUgkCWS2bMzpwQEuEC-CR3Oq4Uh9lAthMggxVXjznd6eg1D2WhjKqwBoJZAapvyKeQDxOxP2xx5x5c7AgoA';
-var sJWSRS256 = 'eyJhbGciOiJSUzI1NiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.OoVNI-3eO1TKSjFBmYkHRx_fnKHwsl9or1396QtfdJM5cFAEP6ZVSzhHab5H6t24vmDzGEOlUj9aQPZFarvKCJfiBe2tLk5iWhkLmY9fmeMgMIgwbYTVkwm5HWDeYntMd8NR8r-nfM2PBYRrtwaNSj3bCqlqLUr7mNGh6t-nw_o';
-var sJWSRS384 = 'eyJhbGciOiJSUzM4NCIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.UMDJVFxQ5KKeyCzp9BcSKav6pWCK8by4mLmwb7yJ2ZpUJyjS4IIwiDKbk_HGKZCB7NYOWCRznKr5Uq_-lxMb6nl25XOEZNz7PJsOhNA_dImPirWGpXUMcyXmPNsR2SmmSNwrFDNd0suOKQ1OqO80zA2m46HrBi2xLQgVB7EL8sU';
-var sJWSRS512 = 'eyJhbGciOiJSUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.WbpWEI34EMx3yJLdCwkaXCBVtIuDZHCg-XkxTcHm_pX93ryJZxofUDpzLALx257DfD-g2KbSpQFxvJDFebgvqanRO3PxQdPgpXVW8MUD-BtFHLyROHOVOczf5OFRqCEKpvNnPMRuC00FT-08jMJZxQJWPd6Xtb1AnpXulM7MTmI';
+var sJWSRS256 = 'eyJhbGciOiJSUzI1NiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.ZazJJUUs46DcEHrfgs_3Uygj4ASAMS2Xt1y0jzHVQGQ-Q18FDrnF06rzcEb393jaMGXSxa9EbYVwV-V3U9byW8L2-knFOG81bVCJi2IIs3t0usZp0_VvX9J6BeX7dNjVd4YfMTLUbeXgyJ5xZTo2y2LYTFrrizGaOPskFnSHSxw';
+var sJWSRS384 = 'eyJhbGciOiJSUzM4NCIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.N_gjaRG3Ub40H7BQJnuIMD0Ctuo7UbIFJy57HVaoBm7SEPOXs-SRCp5vEPQmmBmPCk1xC7BZ50uMedV7pEffmswfdTqoqZ1Hx_zVq2BPOVAh0vEPQfXQxDz6EK8R0pFrGUViqjDNGb5iCq3eUuJlQSU1y3B1nyn6JDRqkv6b8jg';
+var sJWSRS512 = 'eyJhbGciOiJSUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.VCd2nFVU_cPMj4I1e5O3OPgjAPcTFz-Gvq9-CdrnTcv0OPa43yPU2CyvUQs2B8VeaIlnu6LJt-bPIy90GdstmNY6oRqQAO1BAdXnTNT-8FfpCCe8eLQ9y0JLnUCmZIyuxuvocq5CTuJU5UKf9yxUKLzp44LqCagR0Bz1JsMen9o';
 
 describe("jws", () => {
     it("ALGORITHMS", () => {
@@ -323,7 +176,7 @@ describe("jws", () => {
                 "cty": "JWT"
             }, {
                 "age": 21
-            }, z3PrvPemP8P);
+            }, jwk_rsa);
             assert.equal(sJWS, sJWSRS256);
         });
 
@@ -333,7 +186,7 @@ describe("jws", () => {
                 "cty": "JWT"
             }, {
                 "age": 21
-            }, z3PrvPemP8P);
+            }, jwk_rsa);
             assert.equal(sJWS, sJWSRS384);
         });
 
@@ -343,7 +196,7 @@ describe("jws", () => {
                 "cty": "JWT"
             }, {
                 "age": 21
-            }, z3PrvPemP8P);
+            }, jwk_rsa);
             assert.equal(sJWS, sJWSRS512);
         });
 
@@ -353,7 +206,7 @@ describe("jws", () => {
                 "cty": "JWT"
             }, {
                 "age": 21
-            }, k1PrvPemP8P);
+            }, jwk_p256);
             var a = sJWS.split(".");
 
             assert.equal(a[0], 'eyJhbGciOiJFUzI1NiIsImN0eSI6IkpXVCJ9');
@@ -367,7 +220,7 @@ describe("jws", () => {
                 "cty": "JWT"
             }, {
                 "age": 21
-            }, secp256k1PrvPemP8P);
+            }, jwk_p256k);
             var a = sJWS.split(".");
 
             assert.equal(a[0], 'eyJhbGciOiJFUzI1NksiLCJjdHkiOiJKV1QifQ');
@@ -381,7 +234,7 @@ describe("jws", () => {
                 "cty": "JWT"
             }, {
                 "age": 21
-            }, k6PrvPemP8P);
+            }, jwk_p384);
             var a = sJWS.split(".");
 
             assert.equal(a[0], 'eyJhbGciOiJFUzM4NCIsImN0eSI6IkpXVCJ9');
@@ -395,7 +248,7 @@ describe("jws", () => {
                 "cty": "JWT"
             }, {
                 "age": 21
-            }, k5PrvPemP8P);
+            }, jwk_p521);
             var a = sJWS.split(".");
 
             assert.equal(a[0], 'eyJhbGciOiJFUzUxMiIsImN0eSI6IkpXVCJ9');
@@ -409,7 +262,7 @@ describe("jws", () => {
                 "cty": "JWT"
             }, {
                 "age": 21
-            }, sm2PrvPemP8P);
+            }, jwk_sm2);
             var a = sJWS.split(".");
 
             assert.equal(a[0], 'eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ');
@@ -423,12 +276,12 @@ describe("jws", () => {
                 "cty": "JWT"
             }, {
                 "age": 21
-            }, ed25519PrvPemP8P);
+            }, jwk_ed25519);
             var a = sJWS.split(".");
 
             assert.equal(a[0], 'eyJhbGciOiJFZERTQSIsImN0eSI6IkpXVCJ9');
             assert.equal(a[1], 'eyJhZ2UiOjIxfQ');
-            assert.equal(a[2], 'FZRETpvInH3tv8gNnTwuPIfguG7ZWxG1ep_q9b3EhA2KxCnLVHC21F0h2MzOsHMq9ynoDF7yfTV34Z2K_-IbBQ');
+            assert.equal(a[2], 'DlwPYT6e2hg8V908m_M7o98KLZ6NpwaxXGlfg5twmLST-jDqW0COxj-tP4Vk826Szrf3z7cOa3xGbXo-WEfoDg');
         });
 
         xit("algorithm test: PS256", function () {
@@ -502,64 +355,64 @@ describe("jws", () => {
         });
 
         it("verify test for algorithm RS256 z3", function () {
-            var result = jws.verify(sJWSRS256, z3PubPemP8);
+            var result = jws.verify(sJWSRS256, jwk_rsa);
             assert.equal(result, true);
         });
 
         it("verify test for algorithm RS384 z3", function () {
-            var result = jws.verify(sJWSRS384, z3PubPemP8);
+            var result = jws.verify(sJWSRS384, jwk_rsa);
             assert.equal(result, true);
         });
 
         it("verify test for algorithm RS512 z3", function () {
-            var result = jws.verify(sJWSRS512, z3PubPemP8);
+            var result = jws.verify(sJWSRS512, jwk_rsa);
             assert.equal(result, true);
         });
 
         it("verify test for algorithm ES256(NIST P-256)", function () {
-            assert.equal(jws.verify('eyJhbGciOiJFUzI1NiIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.qVXC_4YMmTvrBDuOYbDzBFnhZynGMKIsMbzUGtCbUcTESk-szN170wRvnI1p2XPfK4Nmr9-Tv_DICzC24MPdrA', k1PubPemP8), true);
-            assert.equal(jws.verify('eyJhbGciOiJFUzI1NiIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.llxxbdRworpUTi3WEFjpeagXN7nQNknQXzrdXWbRuFumT7eqWqn05Vux88ubYQ62nLfUOme5Ou0SGxJYd6MwYw', k1PubPemP8), true);
-            assert.equal(jws.verify('eyJhbGciOiJFUzI1NiIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.5ChOZc5w9T0SSSQgUK806RA36YCZGvYnUwBlTXsjmzJvv8PJ3FuPvjno0W36q1NJOQe3oGEaRl9o-OGR-0h95A', k1PubPemP8), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzI1NiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.izTfVUDNG2S4laFxJbBV3PiE1GaSKB0FDbfNvYm1meagwIwbCLeuUHHZUM9wqTSES78KlOjY2_U7w0PW0wbyig', jwk_p256), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzI1NiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.Zyw4voTJU-ZUfb_C3pH4HWwVPTGBnPnNItxXHfEovf1vs6SYJxQc3pEM9JvSkFmdP9Co22tTvK30M7G7Ttyf_g', jwk_p256), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzI1NiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.UyPLqSunksUkaSKWz5UZf_Mwjurzhsr8hQPnLQGZulScZq-4XHcCj9Qw-VakQp6tP7pY-P6Ja6YwXC-aRnnfXw', jwk_p256), true);
         });
 
         it("verify test for algorithm ES256K(secp256k1)", function () {
-            assert.equal(jws.verify('eyJhbGciOiJFUzI1NksiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.h9IFSFKCz-bHAcY3SdFsrftRuMklKQcAWqhgSh2LYzVjnc0DKPxfAN2AOwJaMglUnRmC7RTyvOMX_dYS0t0AGA', secp256k1PubPemP8), true);
-            assert.equal(jws.verify('eyJhbGciOiJFUzI1NksiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.9OEgxU240zu8MzyPTnkEThfVtSHsTZ-VokzRiD29R4QBy6_Kqdv6iLJt1tzdZFmO_5ErW5r7Hor07dTtaFBJ5Q', secp256k1PubPemP8), true);
-            assert.equal(jws.verify('eyJhbGciOiJFUzI1NksiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.jF2pBcWAXUUNKFJy4xuSMYhnQJ7f-j1TCUepZV9pBNMxRNN2YNKw_ek2Ef2NJ2-qV-xTQroYOm9I2lLS9iclSQ', secp256k1PubPemP8), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzI1NksiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.CyhJ2Z8GU8JMsW3cMePaF0Pj9kcHu8IGJowvEWkDw-GHbhbaWsaCbREtHKmGnoKVhFsMshyBpP-yzt-wCGhZgA', jwk_p256k), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzI1NksiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.bhHUGivuD9EOFvVW8SqQ0_3rt6k3QkPlXnwcDOVI_1V9U0DO7IHam6cQEZwgfbsb9_U5bhWsn2GNAYqC7zTOUA', jwk_p256k), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzI1NksiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.tcOlglTG8jAC3ZmLBLeHtpzd7GxKTGxp74a1sLEBq3b4R1AQwOqka_0OmTUd5qcbS3pLXQntOMPT3gHsbD95Kg', jwk_p256k), true);
         });
 
         it("verify test for algorithm ES384(NIST P-384)", function () {
-            assert.equal(jws.verify('eyJhbGciOiJFUzM4NCIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.ImFmrFvzlyl-BGHz8sdD6we6T1uCL5d6Q-oCWmDSh-q8eSL1bxPix7XZjxZGYJySw1On974Vw2NmzffgXvDPk7Ayvau0_fp0v4KUh4x6RcGKZDQgXVli1mfrGKTFP37C', k6PubPemP8), true);
-            assert.equal(jws.verify('eyJhbGciOiJFUzM4NCIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.Ay21GOTDEXWXr2svATEXAmDBVOVX38G4vSf5HJ9Nfqn1IggP1EDQQU6sJYPunNGkW7dQOZ5fOsgU9WibnOCrz73D3NDNDW5lVtFDmSp3dPQz_pddyv_SzOgXh81tlx-o', k6PubPemP8), true);
-            assert.equal(jws.verify('eyJhbGciOiJFUzM4NCIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.1z6jcEq6MZxqRSdzGW7scWe-un0IQsB87EsUPY5HipsOrlusPcTAKGkGAodrQEEVxfGca2OCssfKdTH_lTwscmfuUayZDK9XzohB7tf6E92RI4Faox0AcicG-WXAH4fS', k6PubPemP8), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzM4NCIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.x5H1t5AEiAnR9GDKKtDJtXxnlPpNyLnsZY2ycYQ_Gjj6VgckeOehscomG6-nhan78nprOGbbIaFBgebeldh1VXZ7NEt802FLIRBVZvFOJYXVH1vAxOCi6ZQFKsihOOG-', jwk_p384), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzM4NCIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.JRPI36qVt_hO8STBL-A8iDjBkA_fZqqRKrjsU6u3PsppeNO_h8OSwmHCrzpbeNTzNgghnaDJY5h1LpvxGQcOMABODJ4iWe4gm0aQvZsdq9KWIZV675JiJHgprFKtyDTd', jwk_p384), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzM4NCIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.9joaqGjz7x9zxoZgnH2Boj4WAW3Ul29r5FiyiGDrzyC7OQiS9v51Gf39_oNa48e3iPdIVG02TtiXSOisLK3qq4_5YVdmn7CLp78l3w3Cm-MpBz_zxCAcfBKmB2apOWH8', jwk_p384), true);
         });
 
         it("verify test for algorithm ES512(NIST P-521)", function () {
-            assert.equal(jws.verify('eyJhbGciOiJFUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.AKuic_wYsBge_1jHDce_ZlnIi1rMZTjAJn9RJ8zC06_D5GiIYoLeiEjc5RYq0w73ybamKb8ar1WWWhVNZ-peKF8EAbXyt5JhGv-_0xAs17F2cMTudAYzC451Vxh3j-pfh5OI6YDA--qfQvnl-A9ZXUZ0ebijENvhhsYeGcbqmrq8enOY', k5PrvPemP8P), true);
-            assert.equal(jws.verify('eyJhbGciOiJFUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.AMOaPI3_sbf2kponSVi9cIKHsdR6HY7sz3vQI_Ai5MJQdgRKNCQO3t2KEPEYoFeVRdPz2kQNDRJJyV0PGqNIBdBJAcM-66iYovY7xorJYKNc0J7h5tWiLNglwyCyRYWy5tTwjBcmeyJEC64pmj4aJQIZRafvL-sbSCYgEprGcvZ_9uCh', k5PrvPemP8P), true);
-            assert.equal(jws.verify('eyJhbGciOiJFUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.ABGEdHY9oLylILuCgVUlc4Ikx-Yrs2ZFd9BZkH105OgR2kUWYwyjpgyskxb5DBQDBiLQGLoTFLoWd6Jp3PoTVEhlAMhgBQygxSb0U2K2hcSQ_ffBtQ42Ao3o8Oe5OVCxh78zB9dXUBN4YhIGxBuln5vZhwyn_2bVIzyEdEae5vfnBHNu', k5PrvPemP8P), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.AVbef8S9_aJY49ZQQ2MqxizaDRt_3FEd3DUmSWkFf-jZ1Jtha9rJKR6XRkLcxfVVCilg1xPGALFQQ4a4nwlB3cNaASiRdktbLASTDb7UZ9LbiFkq1CHnzhfTkPpHDvHSLj04lZ3jbsZdxjbRW8pvDZiMycPAfvIVVMddGUsvPLEM5rgO', jwk_p521), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.AEh9pEMuUepHngHJuPPScbniLfVFITFyPz_s92_LVsZDfhZUY7_FfvgKiX98c0jqhzwcVDhrmdN71CV3BEdG4bIBAYWuHUclW5Zo-71B0wlulqq0Rpkxk6nOGXkE_4uOJoPrkaek9PteFHH7Oio7ENb69zYM-JIRlNzJs3nNvIAH0fGl', jwk_p521), true);
+            assert.equal(jws.verify('eyJhbGciOiJFUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.AS1u_sSuAHd3vO7ziVXX8neeykcL4Gi_t8gfj4FpXebmp36zR-Z1SvaYlPPKqergnTLBZD_u15mzzIPmZ1LvFXjVALWfWbdcK2JMRNXtTKPX8dO7UI_6mya0Fgu-Wg58hSZ9PGUTKgseHUPWU-1yx0uDP-Lo_Kbm3deZ3RAFqd8f0eus', jwk_p521), true);
         });
 
         it("verify test for algorithm SM2SM3", function () {
-            assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.AzJ4KaYFfDnJqmzhdgVomSrP8SKjV2222ARJpSpE2dkHSPD_GcLf3CXjhIfCvwAvgP1Al8z8P6eJ_UkGvlnxLA', sm2PubPemP8), true);
-            assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.5Tvn62blLvNX7yUzCXDJg8gXR4CBLvVNVnG3PfLX4zP0g2YwB-5r6k-lp4Ub4aSFMZm9xDTyIOQCPCiQH99LSg', sm2PubPemP8), true);
-            assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.G1A-6xxdYPTKKk5fcpUGrmnPDqpXuPZ438I8Mx7tafGDXVYsmomd0i9EN-6blH0OpHOmBrch_OnS-uFUlw_OOw', sm2PubPemP8), true);
+            assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.K0hN53oMxZptFIVaNmb7U_2Z6B4osY7ku23gcE-ynVEi3k6h9TQ-onH3QOuULB2TLfnHiKWd7o4jDfjFLGfFfQ', jwk_sm2), true);
+            assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.i7K40oqnBFZbBaWHyjpl652Hcp2dQhZtWR21oVF-6xzsoTyES3p44fyacVcTMxtOM67J01giKcMKL8fQWDyN6Q', jwk_sm2), true);
+            assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.JzGXEcph3eFsY2jWI6j5V2ip9eY9UGjjqWNJA2OvijkcfrcomYaNmi5j_BM-le4LpZRB-od83kl5Yx0zmSf8Jg', jwk_sm2), true);
         });
 
         it("verify test for algorithm EdDSA", function () {
-            assert.equal(jws.verify('eyJhbGciOiJFZERTQSIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.FZRETpvInH3tv8gNnTwuPIfguG7ZWxG1ep_q9b3EhA2KxCnLVHC21F0h2MzOsHMq9ynoDF7yfTV34Z2K_-IbBQ', ed25519PubPemP8), true);
+            assert.equal(jws.verify('eyJhbGciOiJFZERTQSIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.DlwPYT6e2hg8V908m_M7o98KLZ6NpwaxXGlfg5twmLST-jDqW0COxj-tP4Vk826Szrf3z7cOa3xGbXo-WEfoDg', jwk_ed25519), true);
         });
 
         xit("verify test for algorithm PS256 z3", function () {
-            assert.equal(jws.verify('eyJhbGciOiJQUzI1NiIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.TGkI8x3Be2Z4Hu5c1hP75uMg0XDmDBrqb-pAbp0IbCYElPloOsGVaEqdPqsl8Ck2b3tmMrFtzcUTSYMWncpP4sBlFH5HCVEBo-8Qt23K53wNBM5d13vD0u-GPDUkdz1WbMrGfsOg64yiQrz1aIkLPaKvTN9lOni4hutNHBnIWZA', z3PubPemP8), true);
-            assert.equal(jws.verify('eyJhbGciOiJQUzI1NiIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.cVJs2mltXOoWwm7nrlf8tdUQ6THB65BD4oVdxhPcvMVv8qZPG8EEjsRzaexevBt_U5yzidkjqcy4eK9A2vJpm1Nx1iMlHlvps1Qp28m9fQcfXDn0UUpMKRCtjeof4Q4y3Luse5tecHkfTClyCvenJ1cCmYsV8QhVATeLy3J4z5g', z3PubPemP8), true);
-            assert.equal(jws.verify('eyJhbGciOiJQUzI1NiIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.kax6sH0vKJwRE6RJkEZeH0IEPsZ0_KU3QTNBNAeBm677I3OwiZqDb-ryVj442odoUywRiJlSexnz4MbPQ0vCOLT_KvfAVers0NFXJmM6E0vfFfw1Jgs5dNwedBo0BAqD-jL9qS21OBKDb7QCNHDGRiMR6KldGp9v312Vb7HO3GQ', z3PubPemP8), true);
+            assert.equal(jws.verify('eyJhbGciOiJQUzI1NiIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.TGkI8x3Be2Z4Hu5c1hP75uMg0XDmDBrqb-pAbp0IbCYElPloOsGVaEqdPqsl8Ck2b3tmMrFtzcUTSYMWncpP4sBlFH5HCVEBo-8Qt23K53wNBM5d13vD0u-GPDUkdz1WbMrGfsOg64yiQrz1aIkLPaKvTN9lOni4hutNHBnIWZA', jwk_rsa), true);
+            assert.equal(jws.verify('eyJhbGciOiJQUzI1NiIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.cVJs2mltXOoWwm7nrlf8tdUQ6THB65BD4oVdxhPcvMVv8qZPG8EEjsRzaexevBt_U5yzidkjqcy4eK9A2vJpm1Nx1iMlHlvps1Qp28m9fQcfXDn0UUpMKRCtjeof4Q4y3Luse5tecHkfTClyCvenJ1cCmYsV8QhVATeLy3J4z5g', jwk_rsa), true);
+            assert.equal(jws.verify('eyJhbGciOiJQUzI1NiIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.kax6sH0vKJwRE6RJkEZeH0IEPsZ0_KU3QTNBNAeBm677I3OwiZqDb-ryVj442odoUywRiJlSexnz4MbPQ0vCOLT_KvfAVers0NFXJmM6E0vfFfw1Jgs5dNwedBo0BAqD-jL9qS21OBKDb7QCNHDGRiMR6KldGp9v312Vb7HO3GQ', jwk_rsa), true);
         });
 
         xit("verify test for algorithm PS384 z3", function () {
-            assert.equal(jws.verify('eyJhbGciOiJQUzM4NCIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.W7smmk62AVqQvkMUlOOFs251qGFZdq87CqWmExhl1JfKTjadUScrFZQ5_1oaAP234dq8sTG42Sdotvcb_tz15bfR4qHIcNzpHjO0QKNHLe3STLgBuwkFR4O4waaldqqRyqxFbS2zxW6QSbH2mayIm_3ipbL9Evbqm3aC0TcwvnQ', z3PubPemP8), true);
-            assert.equal(jws.verify('eyJhbGciOiJQUzM4NCIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.BztDRoB11X7HgIpg_uRSMa0T8gkOgHFmlPo8FGkrmDTUnV9ZbO12L7bmOzrbeCbtWOYyVO8XKUfqo8gUATgr6g4IEnpG8HTPZRsouxGvr7YvLp-NHypwtXSxo4U8QCDs--fpOcmTnQpShKOd9EPwuTuoeLjGG6o6DOOu7SgK7EM', z3PubPemP8), true);
-            assert.equal(jws.verify('eyJhbGciOiJQUzM4NCIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.c7MSE8a-P4OD9gfPEixnS5o1ZgN99yTrt_o2G3OINX47rFOYiVgvrDgrZZXzTFNSZTcuHn4GbU3lB9IWVZMZJl8SE7qdNlSanM9YmkSsYfn4bvGFLdS62yfQWdwM-zngVI2KU5azXXS3DWMjBWrI3hlqqCjdNMMhRWfmoUnzVmc', z3PubPemP8), true);
+            assert.equal(jws.verify('eyJhbGciOiJQUzM4NCIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.W7smmk62AVqQvkMUlOOFs251qGFZdq87CqWmExhl1JfKTjadUScrFZQ5_1oaAP234dq8sTG42Sdotvcb_tz15bfR4qHIcNzpHjO0QKNHLe3STLgBuwkFR4O4waaldqqRyqxFbS2zxW6QSbH2mayIm_3ipbL9Evbqm3aC0TcwvnQ', jwk_rsa), true);
+            assert.equal(jws.verify('eyJhbGciOiJQUzM4NCIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.BztDRoB11X7HgIpg_uRSMa0T8gkOgHFmlPo8FGkrmDTUnV9ZbO12L7bmOzrbeCbtWOYyVO8XKUfqo8gUATgr6g4IEnpG8HTPZRsouxGvr7YvLp-NHypwtXSxo4U8QCDs--fpOcmTnQpShKOd9EPwuTuoeLjGG6o6DOOu7SgK7EM', jwk_rsa), true);
+            assert.equal(jws.verify('eyJhbGciOiJQUzM4NCIsICJjdHkiOiJKV1QifQ.eyJhZ2UiOiAyMX0.c7MSE8a-P4OD9gfPEixnS5o1ZgN99yTrt_o2G3OINX47rFOYiVgvrDgrZZXzTFNSZTcuHn4GbU3lB9IWVZMZJl8SE7qdNlSanM9YmkSsYfn4bvGFLdS62yfQWdwM-zngVI2KU5azXXS3DWMjBWrI3hlqqCjdNMMhRWfmoUnzVmc', jwk_rsa), true);
         });
 
         xit("verify test for algorithm PS512 z4", function () {
