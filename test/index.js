@@ -393,11 +393,25 @@ describe("jws", () => {
             assert.equal(jws.verify('eyJhbGciOiJFUzUxMiIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.AS1u_sSuAHd3vO7ziVXX8neeykcL4Gi_t8gfj4FpXebmp36zR-Z1SvaYlPPKqergnTLBZD_u15mzzIPmZ1LvFXjVALWfWbdcK2JMRNXtTKPX8dO7UI_6mya0Fgu-Wg58hSZ9PGUTKgseHUPWU-1yx0uDP-Lo_Kbm3deZ3RAFqd8f0eus', jwk_p521), true);
         });
 
-        it("verify test for algorithm SM2SM3", function () {
-            assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.K0hN53oMxZptFIVaNmb7U_2Z6B4osY7ku23gcE-ynVEi3k6h9TQ-onH3QOuULB2TLfnHiKWd7o4jDfjFLGfFfQ', jwk_sm2), true);
-            assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.i7K40oqnBFZbBaWHyjpl652Hcp2dQhZtWR21oVF-6xzsoTyES3p44fyacVcTMxtOM67J01giKcMKL8fQWDyN6Q', jwk_sm2), true);
-            assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.JzGXEcph3eFsY2jWI6j5V2ip9eY9UGjjqWNJA2OvijkcfrcomYaNmi5j_BM-le4LpZRB-od83kl5Yx0zmSf8Jg', jwk_sm2), true);
-        });
+        if (process.version <= "v0.37.0") {
+            var sm2PubPemP8 = `
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEwfulw1wMxo7b+3HrGlEvfyaUkjy/
+qHgclV503uiei42yv2o3HcEU+5+rL3os/o5ZiO5/IYdH6aR3AVJTVGSUiA==
+-----END PUBLIC KEY-----`;
+
+            it("verify test for algorithm SM2SM3", function () {
+                assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.AzJ4KaYFfDnJqmzhdgVomSrP8SKjV2222ARJpSpE2dkHSPD_GcLf3CXjhIfCvwAvgP1Al8z8P6eJ_UkGvlnxLA', sm2PubPemP8), true);
+                assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.5Tvn62blLvNX7yUzCXDJg8gXR4CBLvVNVnG3PfLX4zP0g2YwB-5r6k-lp4Ub4aSFMZm9xDTyIOQCPCiQH99LSg', sm2PubPemP8), true);
+                assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.G1A-6xxdYPTKKk5fcpUGrmnPDqpXuPZ438I8Mx7tafGDXVYsmomd0i9EN-6blH0OpHOmBrch_OnS-uFUlw_OOw', sm2PubPemP8), true);
+            });
+        } else {
+            it("verify test for algorithm SM2SM3", function () {
+                assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.K0hN53oMxZptFIVaNmb7U_2Z6B4osY7ku23gcE-ynVEi3k6h9TQ-onH3QOuULB2TLfnHiKWd7o4jDfjFLGfFfQ', jwk_sm2), true);
+                assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.i7K40oqnBFZbBaWHyjpl652Hcp2dQhZtWR21oVF-6xzsoTyES3p44fyacVcTMxtOM67J01giKcMKL8fQWDyN6Q', jwk_sm2), true);
+                assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.JzGXEcph3eFsY2jWI6j5V2ip9eY9UGjjqWNJA2OvijkcfrcomYaNmi5j_BM-le4LpZRB-od83kl5Yx0zmSf8Jg', jwk_sm2), true);
+            });
+        }
 
         it("verify test for algorithm EdDSA", function () {
             assert.equal(jws.verify('eyJhbGciOiJFZERTQSIsImN0eSI6IkpXVCJ9.eyJhZ2UiOjIxfQ.DlwPYT6e2hg8V908m_M7o98KLZ6NpwaxXGlfg5twmLST-jDqW0COxj-tP4Vk826Szrf3z7cOa3xGbXo-WEfoDg', jwk_ed25519), true);
