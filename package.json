@@ -15,12 +15,19 @@
     "ci": "fibjs test"
   },
   "ci": {
-    "type": "travis",
+    "type": "actions",
+    "os": [
+      "windows-2019",
+      "ubuntu-20.04",
+      "macos-11",
+      "macos-14"
+    ],
     "version": [
-      "0.32.0"
+      "0.36.0",
+      "0.37.0"
     ]
   },
   "devDependencies": {
-    "@fibjs/ci": "^2.1.0"
+    "@fibjs/ci": "^2.7.1"
   }
 }
