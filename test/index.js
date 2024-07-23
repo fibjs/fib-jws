@@ -263,6 +263,7 @@ describe("jws", () => {
             }, {
                 "age": 21
             }, jwk_sm2);
+            console.log(sJWS);
             var a = sJWS.split(".");
 
             assert.equal(a[0], 'eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ');
@@ -407,9 +408,9 @@ qHgclV503uiei42yv2o3HcEU+5+rL3os/o5ZiO5/IYdH6aR3AVJTVGSUiA==
             });
         } else {
             it("verify test for algorithm SM2SM3", function () {
-                assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.K0hN53oMxZptFIVaNmb7U_2Z6B4osY7ku23gcE-ynVEi3k6h9TQ-onH3QOuULB2TLfnHiKWd7o4jDfjFLGfFfQ', jwk_sm2), true);
-                assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.i7K40oqnBFZbBaWHyjpl652Hcp2dQhZtWR21oVF-6xzsoTyES3p44fyacVcTMxtOM67J01giKcMKL8fQWDyN6Q', jwk_sm2), true);
-                assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.JzGXEcph3eFsY2jWI6j5V2ip9eY9UGjjqWNJA2OvijkcfrcomYaNmi5j_BM-le4LpZRB-od83kl5Yx0zmSf8Jg', jwk_sm2), true);
+                assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.PopgZGIlHVi6MI75hDcggMQ2rCwvdiA2Aa_jsYj9EkytUKRLEc5LI7Plff70KYdaGzVbm7HdcDAIF8fjhaPEig', jwk_sm2), true);
+                assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.trkD-QMRMJuq7iUM4Z-3Jpdp3ZLibPvvVKAKBWWjMRJudLe5nzcJiqM7wWljv75XN5hs7y8UVRD0oozB3NO2vg', jwk_sm2), true);
+                assert.equal(jws.verify('eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ.eyJhZ2UiOjIxfQ.0PEuht9JPa9L6jcmJRAF3DCxpCXiGEsYktyZpJzxWpVZ9Q5p5xL1linESB6nGqFeinosWyVvk2IdG_9fcSxq1A', jwk_sm2), true);
             });
         }
 
