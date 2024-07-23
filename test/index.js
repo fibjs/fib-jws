@@ -263,7 +263,6 @@ describe("jws", () => {
             }, {
                 "age": 21
             }, jwk_sm2);
-            console.log(sJWS);
             var a = sJWS.split(".");
 
             assert.equal(a[0], 'eyJhbGciOiJTTTJTTTMiLCJjdHkiOiJKV1QifQ');
